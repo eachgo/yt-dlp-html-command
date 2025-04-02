@@ -1,6 +1,6 @@
 
 <p align="center">
-  <img src="your-gif-image-url.gif" alt="yt-dlp-html-command banner" width="800">
+  <img src="dlplogo.gif" alt="yt-dlp-html-command banner" width="800">
 </p>
 
 # yt-dlp-html-command
