@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>yt-dlp 命令生成器</title>
+  <style>
+    /* 在这里添加 CSS 样式 */
+    html {
+  /* 暗色 */
+  --an0: rgba(46, 52, 64, 1);
+  --an1: rgba(59, 66, 82, 1);
+  --an2: rgba(67, 76, 94, 1);
+  --an4: rgba(76, 86, 106, 1);
+  /* 亮色 */
+  --li0: rgba(216, 222, 233, 1);
+  --li1: rgba(229, 233, 240, 1);
+  --li2: rgba(236, 239, 244, 1);
+  /* 主题色 */
+  --th0: rgba(94, 129, 172, 1);
+  --th1: rgba(129, 161, 193, 1);
+  --th2: rgba(136, 192, 208, 1);
+  --th3: rgba(143, 188, 187, 1);
+  /* 副主题色 */
+  --nd1: rgba(118, 78, 122, 1);
+  --nd2: rgba(231, 183, 234, 1);
+}
+body {
+    font: 20px/1.7 "Helvetica Neue", Arial, "Segoe UI", "Hiragino Sans GB", "Microsoft YaHei", "WenQuanYi Micro Hei", sans-serif;
+    background-color: var(--an4);
+}
+    fieldset { margin-bottom: 20px; color: var(--li1);background-color: var(--an0);}
+    label { display: inline-block; margin-bottom: 5px; }
+    input[type="text"], input[type="password"] { 
+      width: 300px; 
+      background-color: var(--li0);
+      color: var(--nd1);
+      font-size: 1em;
+      border: 2px solid var(--nd1);
+      border-radius: 3px;
+    }
+input:focus ,input:checked{
+  background-color: var(--nd1);
+  color: var(--li1);
+}
+    #commandOutput { width: 100%; height: 100px; }
+    legend {
+  color: var(--th3);
+}
+select {
+  background-color: var(--li0);
+}
+strong {
+  color: var(--th2);
+}
+.flex-container {
+  display: flex;
+  align-items: center;
+}
+span.wenhao i::after {
+  content: "";
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url('data:image/svg+xml;base64,PHN2ZyB2ZXJzaW9uPSIxLjEiICB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHhtbG5zOnhsaW5rPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5L3hsaW5rIiB4PSIwcHgiIHk9IjBweCIKCSB2aWV3Qm94PSIwIDAgMTYgMTYiIHN0eWxlPSJlbmFibGUtYmFja2dyb3VuZDpuZXcgMCAwIDE2IDE2OyIgeG1sOnNwYWNlPSJwcmVzZXJ2ZSI+CjxzdHlsZSB0eXBlPSJ0ZXh0L2NzcyI+Cgkuc3Qwe2ZpbGw6Izg4QzBEMDt9Cjwvc3R5bGU+CjxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik04LDE1Yy0zLjksMC03LTMuMS03LTdzMy4xLTcsNy03czcsMy4xLDcsN1MxMS45LDE1LDgsMTV6IE04LDE2YzQuNCwwLDgtMy42LDgtOHMtMy42LTgtOC04UzAsMy42LDAsOAoJUzMuNiwxNiw4LDE2eiIvPgo8Zz4KCTxwYXRoIGNsYXNzPSJzdDAiIGQ9Ik05LjcsMy44YzAuNCwwLjIsMC43LDAuNCwwLjksMC43czAuMywwLjYsMC4zLDFjMCwwLjMtMC4xLDAuNi0wLjIsMC44Yy0wLjEsMC4yLTAuMywwLjQtMC40LDAuNgoJCVM5LjksNy4yLDkuNyw3LjRDOS4zLDcuNiw5LjEsNy44LDguOSw4QzguOCw4LjIsOC43LDguNCw4LjcsOC43VjlIN1Y4LjdjMC0wLjQsMC0wLjcsMC4xLTFzMC4zLTAuNSwwLjQtMC42QzcuNyw2LjksOCw2LjgsOC4yLDYuNgoJCWMwLjMtMC4yLDAuNC0wLjMsMC42LTAuNUM4LjksNiw4LjksNS45LDguOSw1LjdjMC0wLjItMC4xLTAuNC0wLjMtMC41QzguNSw1LjEsOC4zLDUsOCw1UzcuNCw1LjEsNy4yLDUuMkM2LjksNS4zLDYuNyw1LjUsNi41LDUuNwoJCUw1LjMsNC44QzYsMy45LDcsMy41LDguMiwzLjVDOC43LDMuNSw5LjIsMy42LDkuNywzLjh6IE04LjYsMTAuNGMwLjIsMC4yLDAuMywwLjUsMC4zLDAuOFM4LjgsMTEuOCw4LjYsMTJzLTAuNSwwLjMtMC44LDAuMwoJCVM3LjIsMTIuMiw3LDEyYy0wLjItMC4yLTAuMy0wLjUtMC4zLTAuOHMwLjEtMC41LDAuMy0wLjhjMC4yLTAuMiwwLjUtMC4zLDAuOC0wLjNDOC4xLDEwLjEsOC40LDEwLjIsOC42LDEwLjR6Ii8+CjwvZz4KPC9zdmc+Cgo=');
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
+.logo-container {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+}
+
+.logo-container svg {
+    height: 3em; /* 设置与标题相同的高度 */
+    margin-right: 0.5em; /* Logo与标题的间距 */
+}
+
+h1 {
+    display: inline-block; /* 让标题水平排列 */
+    height: 3em;/*设定和SVG相同的高度*/
+    line-height: 3em;/*设定和SVG相同的高度*/
+    font-size: 1.5em; /* 根据需要调整字体大小 */
+}
+input[type="checkbox"],input[type="radio"]  {
+  accent-color: var(--th2); /* 设置复选框的主题色 */
+  vertical-align: middle;
+  margin-right: 0.25em;
+}
+/* 全局复选框和单选框样式 */
+input[type="checkbox"],
+input[type="radio"] {
+  accent-color: var(--th2); /* 设置复选框和单选框的主题色 */
+  vertical-align: middle;
+  margin-right: 0.25em;
+}
+
+.option-fieldset {
+    background-color: var(--an1);
+    border: none;
+    border-radius: 0.4em;
+    padding: 1em;
+    min-height: 10em; /* 根据实际内容调整 */
+    color: var(--li1);
+    font-family: sans-serif;
+    margin-bottom: 1em;
+}
+
+.option-fieldset legend {
+    font-size: 1.5em;
+    color: var(--li2);
+    padding: 0 0.5em;
+}
+
+/* ... (之前的 CSS 代码) ... */
+
+/* default-message 样式 */
+.option-fieldset .default-message {
+    background-color: var(--nd2);
+    color: var(--nd1); /* 修改文字颜色为 --nd1 */
+    padding: 0.5em;
+    border-radius: 0.2em;
+    margin-bottom: 0.5em; /* 修改底部间距 */
+}
+
+.option-fieldset .default-message strong {
+    font-weight: bold;
+    color: var(--nd1);
+}
+
+/* 锁链图标样式 */
+.option-fieldset .default-message a svg {
+    width: 1.5em;
+    height: 1.5em;
+    vertical-align: middle;
+    fill: none;
+    stroke: var(--th0);
+    padding-left: 3em; /* 添加左内边距 */
+}
+
+.option-fieldset .default-message a:hover svg {
+    stroke: var(--th1);
+}
+
+.option-fieldset .input-label {
+    display: block;
+    margin-top: 0.5em;
+    color: var(--li1);
+    background-color: var(--an2);
+    padding: 0.25em;
+    border-radius: 0.2em;
+    margin-bottom: 0;
+    line-height: 2em; /* 调整行高 */
+    box-sizing: border-box;
+}
+
+.option-fieldset input[type="file"],
+.option-fieldset input[type="text"],
+.option-fieldset input[type="password"] {
+    background-color: var(--an2);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--li1);
+    color: var(--li1);
+    padding: 0.25em;
+    border-radius: 0.2em;
+    width: 100%;
+    line-height: 2em; /* 调整行高 */
+    box-sizing: border-box;
+}
+
+.option-fieldset input[type="file"]:focus,
+.option-fieldset input[type="text"]:focus,
+.option-fieldset input[type="password"]:focus {
+    outline: none;
+    border-bottom: 2px solid var(--th2);
+}
+
+.option-fieldset input[type="text"]:disabled,
+.option-fieldset input[type="file"]:disabled,
+.option-fieldset input[type="password"]:disabled,
+.option-fieldset select:disabled {
+  cursor: not-allowed;
+    border-bottom: 1px solid var(--nd1); /* 修改底部边框颜色 */
+}
+
+.option-fieldset .checkbox-label {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    margin-top: 0.5em;
+}
+
+.option-fieldset .checkbox-label span.wenhao {
+    display: inline-block;
+    margin-left: 0.25em;
+}
+
+.option-fieldset p {
+    /* 移除 align-self: baseline; */
+}
+
+/* 第二层 fieldset 样式 */
+.nested-fieldset {
+    border-left: 3px solid var(--th1); /* 加粗左边框 */
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    background-color: transparent;
+    padding-left: 1.5em;
+    margin-top: 1em;
+    border-radius: 0; /* 移除圆角 */
+}
+
+.nested-fieldset legend {
+    color: var(--th1);
+    font-size: 0.9em;
+    font-weight: normal;
+}
+
+/* 第三层 fieldset 样式 */
+.nested-fieldset-deeper {
+    border-left: 2px solid var(--th2);
+    border-top: none;
+    border-right: none;
+    border-bottom: none;
+    background-color: transparent;
+    padding-left: 1.5em;
+    margin-top: 1em;
+    border-radius: 0; /* 移除圆角 */
+}
+
+.nested-fieldset-deeper legend {
+    color: var(--th2);
+    font-size: 0.8em;
+    font-weight: normal;
+}
+
+#outputTemplateBuilder {
+    display: inline-flex; /* 使用 inline-flex，使元素水平排列 */
+    align-items: center;
+    margin-bottom: 0.5em; /* 使用 em 单位实现自适应间距 */
+    border-radius: 2em; /* 添加圆角 */
+    background-color: var(--th0); /* 使用主题色变量 */
+    padding: 0.3em 0.6em; /* 使用 em 单位实现自适应内边距 */
+    color: var(--li0); /* 使用亮色变量 */
+}
+
+#outputTemplateBuilder select.template-variable {
+    margin-right: 0.25em;
+    padding: 0.3em;
+    background-color: transparent;
+    border: none;
+    color: var(--li0);
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 1.5em;/*为箭头留出空间*/
+    background-image: url('data:image/svg+xml;charset=UTF-8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 12 12"><path fill="%23FFFFFF" d="M10.293 3.293a1 1 0 0 1 1.414 1.414l-5 5a1 1 0 0 1-1.414 0l-5-5a1 1 0 1 1 1.414-1.414L6 7.586l4.293-4.293z"/></svg>');/*添加背景svg*/
+    background-repeat: no-repeat;/*不重复*/
+    background-position: right .5em center;/*定位箭头*/
+}
+
+#outputTemplateBuilder button#addTemplateVariable {
+    padding: 0.3em 0.6em; /* 使用 em 单位实现自适应内边距 */
+    border: none;
+    background-color: transparent; /* 透明背景 */
+    color: var(--li0); /* 使用亮色变量 */
+    cursor: pointer;
+    font-weight: bold; /* 加粗 */
+}
+
+#outputTemplateBuilder span.variable-display {
+    background-color: var(--li2); /* 使用亮色变量 */
+    padding: 0.3em; /* 使用 em 单位实现自适应内边距 */
+    margin-left: 0.25em; /* 使用 em 单位实现自适应间距 */
+    border-radius: 3px;
+    color: var(--an4); /* 使用暗色变量 */
+    border: 1px solid var(--an2);
+}
+
+
+
+/* 移除 select 和 button 的默认样式 */
+#outputTemplateBuilder select.template-variable,
+#outputTemplateBuilder button#addTemplateVariable {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+#outputTemplateBuilderSpan {
+    display: block;
+    align-items: center;
+    margin-bottom: 0.5em;
+    min-height: 2.5em; /* 设置最小高度，确保有足够的空间显示 span */
+}
+
+#outputTemplateBuilderSpan span {
+    background-color: var(--th0); /* 使用主题色作为背景 */
+    color: var(--li0); /* 使用亮色作为文字颜色 */
+    padding: 0.3em 0.6em; /* 设置内边距 */
+    border-radius: 2em; /* 设置圆角 */
+    margin-right: 0.25em; /* 设置右边距 */
+    display: inline-flex;
+    align-items: center;
+}
+
+#outputTemplateBuilderSpan span button.remove-variable {
+    background-color: transparent; /* 设置背景透明 */
+    border: none; /* 移除边框 */
+    color: var(--li0); /* 设置文字颜色 */
+    font-weight: bold; /* 文字加粗 */
+    cursor: pointer;
+    margin-left: 0.25em; /* 设置左边距 */
+}
+
+#outputTemplateBuilderSpan span button.remove-variable:hover {
+    color: var(--li1); /* 鼠标悬停时更改文字颜色 */
+}
+#outputTemplateBuilder select.template-variable {
+    margin-right: 0.25em;
+    padding: 0.3em;
+    background-color: var(--th0); /* 使用主题色作为背景 */
+    color: var(--li0); /* 使用亮色作为文字颜色 */
+    border: none; /* 移除边框 */
+    appearance: none; /* 移除默认样式 */
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+#outputTemplateBuilder select.template-variable option {
+    background-color: var(--th0); /* 保持选项背景色与下拉菜单一致 */
+    color: var(--li0); /* 保持选项文字颜色与下拉菜单一致 */
+}
+#commandOutputCard {
+    position: fixed;
+    bottom: 1em;
+    right: 1em;
+    background-color: var(--an1);
+    border-radius: 0.5em;
+    padding: 1em;
+    box-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+  max-width: 80%; /* 设置最大宽度 */
+    box-sizing: border-box; /* 确保内边距和边框包含在宽度内 */
+}
+
+#commandArea {
+    background-color: var(--an2);
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.5em;
+    border-radius: 0.3em;
+    padding: 0.5em;
+}
+
+#commandOutput {
+    background-color: transparent;
+    color: var(--li0);
+    border: none;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    flex: 1;
+    margin-right: 0.5em;
+    resize: none;
+    outline: none;
+    box-shadow: none;
+}
+
+#generateButton {
+    background-color: var(--th0);
+    color: var(--li0);
+    padding: 0.5em 1em;
+    border: none;
+    border-radius: 0.3em;
+    cursor: pointer;
+    align-self: flex-end;
+}
+
+#generateButton:hover {
+    background-color: var(--th1);
+}
+
+#actionButtons {
+    display: flex;
+    justify-content: flex-start;
+}
+
+#copyCommandButton, #resetSettingsButton {
+    background-color: transparent;
+    color: var(--li0);
+    padding: 0.5em 1em;
+    border: 2px solid var(--an2);
+    border-radius: 0.3em;
+    cursor: pointer;
+    margin-right: 0.5em;
+}
+
+#copyCommandButton:hover, #resetSettingsButton:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#pageFooter {
+    height: calc(3em + 2px); /* 与 commandOutputCard 高度相似 */
+    background-color: var(--an1); /* 与 commandOutputCard 相同 */
+    border-radius: 0.5em; /* 与 commandOutputCard 相同 */
+    padding: 1em; /* 与 commandOutputCard 相同 */
+    box-shadow: 0 0.2em 0.5em rgba(0, 0, 0, 0.2); /* 与 commandOutputCard 相同 */
+    color: var(--li0);
+    display: flex;
+    align-items: center;
+    margin-top: 1em; /* 顶部间距，与 commandOutputCard 底部间距一致 */
+}
+
+#pageFooter a {
+    color: var(--li0);
+    text-decoration: none;
+}
+
+#pageFooter a:hover {
+    text-decoration: underline;
+}
+.preset-select { /* 假设 outputTemplateBuilder 的下拉选单使用了 .preset-select 类名 */
+    background-color: var(--an2);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--li1);
+    color: var(--li1);
+    padding: 0.25em;
+    border-radius: 0.2em;
+    width: 100%;
+    height: 34.0333px;
+    box-sizing: border-box;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+.preset-select:focus {
+    outline: none;
+    border-bottom: 2px solid var(--th2);
+}
+
+.select-wrapper {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+}
+
+.select-arrow {
+    position: absolute;
+    top: 50%;
+    right: 0.5em;
+    width: 0;
+    height: 0;
+    border-left: 0.5em solid transparent;
+    border-right: 0.5em solid transparent;
+    border-top: 0.5em solid var(--li1);
+    pointer-events: none;
+    transform: translateY(-50%);
+}
+body {
+    padding-bottom: calc(4em + 2px); /* 为 footer 留出空间, footer的height+footer的bottom的1em */
+    margin-left: 20%;
+}
+nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 20%;
+    height: 100vh;
+    background-color: var(--an4);
+    padding: 0.5em;
+    border-radius: 0 0.2em 0.2em 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto;
+    -ms-overflow-style: none; /* IE 和 Edge */
+    scrollbar-width: none; /* Firefox */
+}
+nav::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+.nav-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    flex-grow: 1;
+}
+
+.nav-item {
+    margin-bottom: 0.5em;
+}
+
+.nav-link {
+    display: block;
+    text-decoration: none;
+    color: var(--li1);
+    padding: 0.5em 1em;
+    border-radius: 0.2em;
+    text-align: center;
+}
+
+.nav-link:hover {
+    background-color: var(--th1);
+    color: var(--li0);
+}
+
+.nav-footer {
+    padding: 1em;
+    text-align: center;
+}
+
+.logo-circle {
+    width: 80px; /* 设置圆圈大小 */
+    height: 80px;
+    border-radius: 50%; /* 设置为圆形 */
+    background-color: var(--th1); /* 主题色背景 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto 0.5em; /* 上下外边距和水平居中 */
+}
+
+.logo-circle svg {
+    width: 50px; /* 设置 SVG 大小 */
+    height: auto;
+    fill: var(--li0); /* 设置 SVG 填充色，确保 logo 颜色和背景对比 */
+}
+
+.nav-title {
+    margin: 0;
+    font-size: 1.2em;
+    color: var(--th1); /* 主题色文字 */
+}
+
+/* 响应式样式 */
+@media (max-width: 768px) {
+    body {
+        margin-left: 0;
+    }
+
+    nav {
+        position: static;
+        width: 100%;
+        height: auto;
+        border-radius: 0 0 0 0;
+        overflow-y: visible;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .nav-list {
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow: 0;
+    }
+
+    .nav-item {
+        margin-right: 1em;
+    }
+
+    .nav-footer {
+        padding: 0.5em;
+        text-align: left;
+    }
+    #commandOutputCard {
+        max-width: none; /* 移除最大宽度限制 */
+    }
+}
+
+.theme-toggle-button {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin: 1em auto;
+    border: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 80%;
+    flex-shrink: 0; /* 防止按钮缩小 */
+}
+
+/* 亮色主题 SVG 背景 */
+.light .theme-toggle-button {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xml:space='preserve' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1081.68 974.18' fill='%232b6674'%3E%3Cpath d='M682.123,407.071h244.64L452.31,881.524H344.817l142.336-284.672H320.723L557.95,122.399h266.509 L682.123,407.071z'/%3E%3C/svg%3E");
+}
+
+/* OLED 主题 SVG 背景 */
+.oled-theme .theme-toggle-button {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1081.68 974.18' fill='%23000000'%3E%3Cpath d='M779.279,78.421c55.322,0,100.169,44.847,100.169,100.169v690.05 c0,55.322-44.847,100.169-100.169-100.169H445.383c-55.322,0-100.169-44.847-100.169-100.169V178.59 c0-55.322,44.847-100.169,100.169-100.169H779.279z M500.988,780.136c-18.441,0-33.39,14.949-33.39,33.39 c0,18.44,14.949,33.39,33.39,33.39c18.441,0,33.39-14.949,33.39-33.39C534.378,795.085,519.429,780.136,500.988,780.136 M612.286,780.136c-18.44,0-33.39,14.949-33.39,33.39c0,18.44,14.949,33.39,33.39,33.39c18.441,0,33.39-14.949,33.39-33.39 C645.676,795.085,630.727,780.136,612.286,780.136 M723.585,780.136c-18.44,0-33.39,14.949-33.39,33.39 c0,18.44,14.949,33.39,33.39,33.39c18.441,0,33.39-14.949,33.39-33.39C756.975,795.085,742.026,780.136,723.585,780.136'/%3E%3C/svg%3E");
+}
+
+/* 默认主题 SVG 背景 */
+body:not(.light):not(.oled-theme) .theme-toggle-button {
+    background-image: url("data:image/svg+xml,%3Csvg version='1.1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1081.68 974.18' fill='rgb(129, 161, 193)'%3E%3Cpath d='M697.269,391.847h273.36L440.476,922H320.363l159.046-318.092H293.441L558.518,73.755h297.797 L697.269,391.847z M418.11,868.985l424.123-424.123h-230.7L770.579,126.77H591.238L379.177,550.893h185.968L406.099,868.985H418.11z'/%3E%3C/svg%3E");
+}
+
+.light {
+    --th0: #88c0d0;
+    --th1: #2b6674;
+    --th2: #4d6268;
+    --th3: #d0e6ed;
+    --th4: #4d6268;
+    --li0: #2e3132;
+    --li1: #0c4f5d;
+    --an0: #f2f4f5;
+    --an1: #e9ecef; /* 修改按钮悬停背景色 */
+    --an2: #d1d3d5; /* 修改导航栏背景色 */
+    --an3: #c2c4c6; /* 修改导航项背景色 */
+    --an4: #d9dadb;
+    --li2: #53686e;
+}
+.light body {
+    background-color: var(--th0);
+    color: var(--th1);
+}
+
+.light nav {
+    background-color: var(--an2);
+}
+
+.light .nav-link {
+    background-color: var(--an3);
+    color: var(--li1);
+}
+
+.light .nav-link:hover {
+    background-color: var(--an4);
+    color: var(--li0);
+}
+
+.light #commandOutputCard {
+    background-color: var(--an4); /* 修改背景色 */
+    border: 1px solid var(--an4); /* 修改边框颜色 */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    transition: box-shadow 0.3s ease; /* 添加过渡效果 */
+}
+
+.light #commandOutputCard:hover {
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2); /* 鼠标悬停时增加阴影 */
+}
+
+.light button {
+    background-color: var(--an0);
+    color: var(--li0);
+    border: none;
+    padding: 0.5em 1em;
+    border-radius: 0.2em;
+}
+
+.light button:hover {
+    background-color: var(--an1);
+}
+.light .logo-circle svg {
+    fill: var(--th3); /* 设置 SVG 填充色，确保 logo 颜色和背景对比 */
+}
+.oled-theme {
+    --th0: #000; /* 主要背景色 */
+    --th1: #fff; /* 主要文字颜色 */
+    --th2: #111; /* 辅助背景色 */
+    --th3: #aaa; /* 辅助文字颜色 */
+    --th4: #333; /* 边框和分隔线颜色 */
+    --li0: #fff; /* 亮色文字 */
+    --li1: #ccc; /* 暗色文字 */
+    --an0: #222; /* 按钮背景色 */
+    --an1: #333; /* 按钮悬停背景色 */
+    --an2: #111; /* 导航栏背景色 */
+    --an3: #222; /* 导航项背景色 */
+    --an4: #111; /* 导航栏背景色 */
+}
+.oled-theme .nav-link:hover {
+    background-color: transparent; /* 移除悬停背景色 */
+    border: 1px solid #fff; /* 添加白色边框 */
+    color: var(--li0); /* 保持悬停文字颜色 */
+}
+
+.oled-theme button:hover {
+    background-color: transparent; /* 移除悬停背景色 */
+    border: 1px solid #fff; /* 添加白色边框 */
+    color: var(--li0); /* 保持悬停文字颜色 */
+}
+
+.oled-theme .logo-circle svg {
+    fill: #000; /* 修改 SVG 填充色为黑色 */
+}
+.oled-theme strong,
+.oled-theme .nested-fieldset-deeper legend {
+    color: #fff; /* 设置字体颜色为白色 */
+}
+
+.oled-theme .nested-fieldset-deeper {
+    border-left: 1px solid #fff; /* 设置左边框为白色 */
+}
+.oled-theme #generateButton:hover {
+    background-color: transparent; /* 移除悬停背景色 */
+    border: 1px solid #fff; /* 添加白色边框 */
+    color: var(--li0); /* 保持悬停文字颜色 */
+}
+.oled-theme .theme-toggle-button:hover {
+    background-color: transparent; /* 移除悬停背景色 */
+    border: 1px solid #fff; /* 添加白色边框 */
+}
+  </style>
+</head>
+<body>
+  <nav>
+    <ul class="nav-list">
+        <li class="nav-item"><a href="#nav-path" class="nav-link">路径</a></li>
+        <li class="nav-item"><a href="#nav-output" class="nav-link">输出</a></li>
+        <li class="nav-item"><a href="#nav-basic" class="nav-link">基本</a></li>
+        <li class="nav-item"><a href="#nav-video-format" class="nav-link">视频格式</a></li>
+        <li class="nav-item"><a href="#nav-post-processing" class="nav-link">后处理</a></li>
+        <li class="nav-item"><a href="#nav-subtitles" class="nav-link">字幕</a></li>
+        <li class="nav-item"><a href="#nav-login-auth" class="nav-link">登录认证</a></li>
+        <li class="nav-item"><a href="#nav-cookies" class="nav-link">Cookies</a></li>
+        <li class="nav-item"><a href="#nav-proxy" class="nav-link">网络代理</a></li>
+        <li class="nav-item"><a href="#nav-config" class="nav-link">配置文件</a></li>
+    </ul>
+    <div class="nav-footer">
+        <div class="logo-circle">
+            <svg id="e7953a2d-a027-4888-b15e-60e9d4874846" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1081.68 974.18"><path d="M732.6,815.88c0-35,10.19-68,35-97.92l-155.17,0,0-98.56,492.85.12,0,98.56h-21c22.25,29.89,31.79,62.33,31.78,94.12C1116,924.72,1041,980,924,980,806.33,980,732.57,923.36,732.6,815.88ZM1004.17,718,849,718c-19.72,22.25-32.45,49.59-32.45,78.84,0,58.51,48.3,84.6,107.44,84.61,58.51,0,108.12-26,108.14-84.55C1032.13,767.63,1021.33,740.28,1004.17,718Z" transform="translate(-34.38 -5.82)"/><path d="M612.5,443.88l492.86.13,0,98.56-492.85-.13Z" transform="translate(-34.38 -5.82)"/><path d="M109.1,620.51l492.86.13,0,98.56-492.85-.12Z" transform="translate(-34.38 -5.82)"/><path d="M56.11,620.51l492.86.13,0,98.56-492.85-.12Z" transform="translate(-34.38 -5.82)"/><path d="M109.1,443.88,602,444l0,98.56-492.85-.13Z" transform="translate(-34.38 -5.82)"/><path d="M117.93,267.25l492.86.12,0,98.57-492.85-.13Z" transform="translate(-34.38 -5.82)"/><path d="M618.63,267.78h25.44c-25.43-29.9-36.23-63.6-36.22-98,0-109.37,75.08-164,193.36-164s191.4,54.74,191.37,167.93c0,32.44-12.09,66.14-32.44,94.12l150.71,0,0,98.57-492.21-.13Zm108.12,0,153.26,0a124,124,0,0,0,28.63-79.48c0-58.51-49.58-84-107.45-84-59.78,0-108.76,24.78-108.77,83.92C692.41,217.56,705.77,244.91,726.75,267.81Z" transform="translate(-34.38 -5.82)"/><path d="M379.06,171.69V276H579.37v78.85H379.06v92.22H558.39V524H379.06V635.92H602.9v78.85h-545V635.92h237.2V524H113.24V457.22l-5.72,8.27L34.38,422.88C87.8,352.3,122.14,278.52,145,191.4l80.77,17.81C218.17,233.37,211.17,255,203.54,276h91.57V171.69ZM119.59,447.05H295.11V354.83h-124C156.48,386.63,139.31,416.52,119.59,447.05Z" transform="translate(-34.38 -5.82)"/></svg>
+        </div>
+        <h1 class="nav-title">yt-dlp 命令生成器</h1>
+    </div>
+    <button class="theme-toggle-button"></button>
+</nav>
+
+
+
+
+    <fieldset class="option-fieldset">
+    <legend id="nav-path">路径选项</legend>
+
+    <label class="input-label" for="pathsInput">文件路径:</label>
+    <input type="text" id="pathsInput" placeholder="例如: home:~/Downloads">
+    <p>指定文件下载路径。</p>
+
+    <label class="input-label" for="outputNaPlaceholderInput">不可用字段占位符:</label>
+    <input type="text" id="outputNaPlaceholderInput" placeholder="默认: NA">
+    <p>指定 --output 中不可用字段的占位符。</p>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="restrictFilenamesCheckbox">
+        <label for="restrictFilenamesCheckbox">
+            限制文件名
+            <span class="wenhao" title="将文件名限制为仅 ASCII 字符，并避免文件名中的 '&' 和空格。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noRestrictFilenamesCheckbox">
+        <label for="noRestrictFilenamesCheckbox">
+            允许 Unicode 字符文件名
+            <span class="wenhao" title="允许文件名中使用 Unicode 字符、'&' 和空格（默认）。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="mtimeCheckbox">
+        <label for="mtimeCheckbox">
+            使用修改时间
+            <span class="wenhao" title="使用 Last-modified 标头设置文件修改时间（默认）。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noMtimeCheckbox">
+        <label for="noMtimeCheckbox">
+            不使用修改时间
+            <span class="wenhao" title="不使用 Last-modified 标头设置文件修改时间。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="windowsFilenamesCheckbox">
+        <label for="windowsFilenamesCheckbox">
+            Windows 兼容文件名
+            <span class="wenhao" title="强制文件名与 Windows 兼容。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noWindowsFilenamesCheckbox">
+        <label for="noWindowsFilenamesCheckbox">
+            最小化文件名清理
+            <span class="wenhao" title="仅对文件名进行最小化清理。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+</fieldset>
+
+  <fieldset  class="option-fieldset">
+ <legend id="nav-output">输出选项</legend>
+  <div id="outputTemplateBuilder">
+    <select class="template-variable">
+      <optgroup label="基本信息">
+        <option value="%(title)s">标题</option>
+        <option value="%(fulltitle)s">完整标题</option>
+        <option value="%(alt_title)s">备选标题</option>
+        <option value="%(id)s">ID</option>
+        <option value="%(uploader)s">上传者</option>
+        <option value="%(duration_string)s">视频时长</option>
+        <option value="%(description)s">视频描述</option>
+      </optgroup>
+      <optgroup label="频道信息">
+        <option value="%(channel)s">频道名称</option>
+        <option value="%(channel_id)s">频道ID</option>
+        <option value="%(channel_url)s">频道URL</option>
+      </optgroup>
+      <optgroup label="播放列表">
+        <option value="%(playlist)s">播放列表</option>
+        <option value="%(playlist_index)s">播放列表索引</option>
+      </optgroup>
+      <optgroup label="上传日期">
+        <option value="%(upload_date>%Y)s">上传年份</option>
+        <option value="%(upload_date>%M)s">上传月份</option>
+        <option value="%(upload_date>%D)s">上传日期</option>
+      </optgroup>
+      <optgroup label="发布日期">
+        <option value="%(release_date>%Y)s">发布年份</option>
+        <option value="%(release_date>%M)s">发布月份</option>
+        <option value="%(release_date>%D)s">发布日期</option>
+      </optgroup>
+      <optgroup label="剧集信息">
+        <option value="%(series)s">剧集</option>
+        <option value="%(season_number)s">季数</option>
+        <option value="%(episode_number)s">集数</option>
+        <option value="%(episode)s">剧集名</option>
+      </optgroup>
+      <optgroup label="分隔符">
+        <option value=".">.</option>
+        <option value=" "> </option>
+        <option value="-">-</option>
+        <option value="/">/</option>
+        <option value="\\">\\</option>
+      </optgroup>
+      <optgroup label="扩展名">
+        <option value="%(ext)s">扩展名</option>
+      </optgroup>
+    </select>
+    <button id="addTemplateVariable">+</button>
+  </div>
+
+  <div id="outputTemplateBuilderSpan"></div>
+  <label for="outputInput" class="input-label">输出模板:</label>
+  <input type="text" id="outputInput" value="%(title)s.%(ext)s">
+  <p>
+  <strong>输出模板构建器说明：</strong><br>
+  使用此构建器，您可以自定义下载文件的输出路径和文件名。您可以选择不同的变量（例如：标题、上传者、日期等）来构建您的模板。
+  <br>
+  <strong>如何使用：</strong>
+  <ol>
+    <li>
+      从下拉列表中选择您想要添加的变量或分隔符。
+    </li>
+    <li>
+      点击“+”按钮将其添加到模板中。
+    </li>
+    <li>
+      您可以通过点击变量旁边的“x”按钮来删除已添加的变量。
+    </li>
+    <li>
+      您可以在“输出模板”文本框中直接编辑模板。
+    </li>
+  </ol>
+  <strong>提示：</strong>
+  <ul>
+    <li>
+      <code>%(title)s</code> 代表视频标题。
+    </li>
+    <li>
+      <code>%(uploader)s</code> 代表上传者名称。
+    </li>
+    <li>
+      <code>%(upload_date>%Y%m%d)s</code> 代表上传日期（年月日）。
+    </li>
+    <li>
+      <code>%(ext)s</code> 代表文件扩展名。
+    </li>
+    <li>
+      您可以使用分隔符（例如：`.`, `-`, `_`）来连接不同的变量。
+    </li>
+  </ul>
+  <strong>示例：</strong>
+  <ul>
+    <li>
+      <code>%(title)s.%(ext)s</code> - 将下载文件命名为视频标题，并使用原始扩展名。
+    </li>
+    <li>
+      <code>%(uploader)s/%(title)s-%(upload_date>%Y%m%d)s.%(ext)s</code> - 将文件保存在上传者命名的文件夹中，并使用标题-上传日期.扩展名的格式。
+    </li>
+  </ul>
+</p>
+</fieldset>
+
+  <fieldset class="option-fieldset">
+    <legend id="nav-basic">基本选项</legend>
+
+    <label class="input-label" for="urlInput">URL:</label>
+    <input type="text" id="urlInput" placeholder="请输入 yt-dlp 支持的下载链接">
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="verboseCheckbox">
+        <label for="verboseCheckbox">
+            详细输出
+            <span class="wenhao" title="终端的信息会更加详细，显示 yt-dlp 运行的详细日志和调试信息。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noWarningsCheckbox">
+        <label for="noWarningsCheckbox">
+            无警告
+            <span title="禁用 yt-dlp 的警告信息，只显示错误信息。" class="wenhao">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="simulateCheckbox">
+        <label for="simulateCheckbox">
+            模拟
+            <span title="模拟下载过程，不实际下载文件，用于测试命令是否正确。" class="wenhao">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noSimulateCheckbox">
+        <label for="noSimulateCheckbox">
+            不模拟
+            <span title="取消模拟下载，执行实际的下载操作。" class="wenhao">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="forceIpv4Checkbox">
+        <label for="forceIpv4Checkbox">强制 IPv4</label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="forceIpv6Checkbox">
+        <label for="forceIpv6Checkbox">强制 IPv6</label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="flatPlaylistCheckbox">
+        <label for="flatPlaylistCheckbox">扁平播放列表</label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="liveFromStartCheckbox">
+        <label for="liveFromStartCheckbox">直播从头开始</label>
+    </div>
+
+</fieldset>
+
+
+<fieldset class="option-fieldset">
+    <legend id="nav-video-format">视频格式选项</legend>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="listFormatsCheckbox">
+        <label for="listFormatsCheckbox">
+            列出格式
+            <span class="wenhao" title="勾选此复选框将在终端中列出所有可用的视频格式，而不是下载视频。这等同于在命令行中使用 -F 或 --list-formats 选项。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div>
+    <label for="formatPresetSelect" class="preset-label">预设：</label>
+    <div class="select-wrapper">
+        <select id="formatPresetSelect" class="preset-select">
+            <option value="bestvideo+bestaudio">最佳音画</option>
+            <option value="bestvideo">最佳视频（无音频）</option>
+            <option value="bestaudio">最佳音频</option>
+            <option value="height:480">小于 480p</option>
+            <option value="height:720">小于 720p</option>
+            <option value="height:1080">小于 1080p</option>
+            <option value="height:1440">小于 1440p</option>
+            <option value="ext=mp4">最佳 MP4</option>
+            <option value="ext=webm">最佳 WebM</option>
+            <option value="filesize:50M">最大文件 50MB</option>
+            <option value="filesize~50M">最接近文件 50MB</option>
+        </select>
+        <span class="select-arrow"></span>
+    </div>
+</div>
+
+    <div class="checkbox-label">
+        <label>
+            由我来填写：
+            <input type="checkbox" id="customFormatCheckbox" />
+        </label>
+    </div>
+
+    <label class="input-label" for="formatInput">格式选择：</label>
+    <input type="text" id="formatInput" />
+
+    <label class="input-label" for="formatSortInput">格式排序：</label>
+    <input type="text" id="formatSortInput" />
+
+    <div>
+        <label>强制排序:</label>
+        <input type="radio" id="formatSortForceRadio" name="formatSortHandling" value="force">
+        <label for="formatSortForceRadio">强制</label>
+        <input type="radio" id="noFormatSortForceRadio" name="formatSortHandling" value="no" checked>
+        <label for="noFormatSortForceRadio">不强制</label>
+    </div>
+
+    <div>
+        <label>视频多流合并:</label>
+        <input type="radio" id="videoMultistreamsRadio" name="videoMultistreamHandling" value="yes">
+        <label for="videoMultistreamsRadio">允许</label>
+        <input type="radio" id="noVideoMultistreamsRadio" name="videoMultistreamHandling" value="no" checked>
+        <label for="noVideoMultistreamsRadio">不允许</label>
+    </div>
+
+    <div>
+        <label>音频多流合并:</label>
+        <input type="radio" id="audioMultistreamsRadio" name="audioMultistreamHandling" value="yes">
+        <label for="audioMultistreamsRadio">允许</label>
+        <input type="radio" id="noAudioMultistreamsRadio" name="audioMultistreamHandling" value="no" checked>
+        <label for="noAudioMultistreamsRadio">不允许</label>
+    </div>
+
+    <div>
+        <label>偏好自由格式:</label>
+        <input type="radio" id="preferFreeFormatsRadio" name="freeFormatHandling" value="yes">
+        <label for="preferFreeFormatsRadio">偏好</label>
+        <input type="radio" id="noPreferFreeFormatsRadio" name="freeFormatHandling" value="no" checked>
+        <label for="noPreferFreeFormatsRadio">不偏好</label>
+    </div>
+
+    <div>
+        <label>格式检查:</label>
+        <input type="radio" id="checkFormatsRadio" name="checkFormatHandling" value="check">
+        <label for="checkFormatsRadio">检查</label>
+        <input type="radio" id="checkAllFormatsRadio" name="checkFormatHandling" value="checkAll">
+        <label for="checkAllFormatsRadio">检查全部</label>
+        <input type="radio" id="noCheckFormatsRadio" name="checkFormatHandling" value="no" checked>
+        <label for="noCheckFormatsRadio">不检查</label>
+    </div>
+
+    <div class="input-label">
+        <label for="mergeOutputFormatInput">
+            合并输出格式:
+            <span class="wenhao" title="当需要合并视频和音频流时使用的容器格式，用 '/' 分隔优先级。支持：avi, flv, mkv, mov, mp4, webm。">
+                <i></i>
+            </span>
+        </label>
+        <input type="text" id="mergeOutputFormatInput" />
+        <p>
+            <strong>例如:</strong> mp4/mkv (mp4优先于mkv,仅在合并视频和音频时有效)
+        </p>
+    </div>
+
+</fieldset>
+
+  <fieldset class="option-fieldset post-processing-options">
+    <legend id="nav-post-processing">后处理选项</legend>
+
+    <div class="info-box default-message">
+        <p>
+            <strong>注意：</strong> 后处理功能需要安装 FFmpeg 才能正常工作。
+            请确保您已安装 FFmpeg，保证在终端的PATH中或者设置正确的 FFmpeg 位置。
+        </p>
+        <p>
+            <a href="https://ffmpeg.org/" target="_blank" title="点击此处了解 FFmpeg 安装方法">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 48 48">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="4">
+        <path d="m26.24 16.373l-9.14-9.14c-2.661-2.661-7.035-2.603-9.768.131s-2.793 7.107-.131 9.769l7.935 7.935m17.767-2.065l7.935 7.935c2.661 2.662 2.603 7.035-.13 9.769c-2.735 2.734-7.108 2.792-9.77.13l-9.14-9.14"/>
+        <path d="M26.11 26.142c2.733-2.734 2.792-7.108.13-9.769m-4.441 5.425c-2.734 2.734-2.792 7.108-.131 9.769"/>
+    </g>
+</svg>
+            </a>
+        </p>
+    </div>
+
+    <fieldset class="option-fieldset nested-fieldset">
+        <legend>FFmpeg 设置</legend>
+        <label for="ffmpegLocationInput">FFmpeg 位置:</label>
+        <input type="text" id="ffmpegLocationInput" placeholder="请输入 FFmpeg 可执行文件的路径" />
+    </fieldset>
+
+    <fieldset class="option-fieldset nested-fieldset">
+        <legend>音频处理</legend>
+        <input type="checkbox" id="extractAudioCheckbox">
+        <label for="extractAudioCheckbox">提取并保存为音频</label>
+        <label for="audioFormatInput">音频格式:</label>
+        <input type="text" id="audioFormatInput" placeholder="不填则为 best，例如：aac>mp3/wav">
+        <p>
+            音频格式转换规则，使用 "输入格式>输出格式" 的语法。
+            支持的格式：best, aac, alac, flac, m4a, mp3, opus, vorbis, wav。
+            可以使用 "/" 分隔多个规则，例如：aac>mp3/wav。
+        </p>
+        <label for="audioQualityInput">音频质量:</label>
+        <input type="text" id="audioQualityInput" placeholder="默认 5，例如：128K 或 3">
+        <p>
+            FFmpeg 音频质量。VBR：0 (最佳) 到 10 (最差)。
+            CBR：指定比特率，例如 128K (默认 5)。
+        </p>
+    </fieldset>
+
+    <fieldset class="option-fieldset nested-fieldset">
+        <legend>视频处理</legend>
+        <label for="remuxVideoInput">视频重新封装:</label>
+        <input type="text" id="remuxVideoInput" placeholder="例如：mp4>mkv/avi">
+        <p>
+            更改视频文件的容器格式，而不重新编码视频流。
+            可以使用 "输入格式>输出格式" 的语法指定多个规则。
+            例如：mp4>mkv/avi（将 MP4 重新封装为 MKV，将其他格式重新封装为 AVI）。
+        </p>
+        <label for="recodeVideoInput">视频重新编码:</label>
+        <input type="text" id="recodeVideoInput" placeholder="例如：mp4">
+        <p>
+            更改视频文件的编码格式，这将重新编码视频流。
+        </p>
+        <p>
+            <strong>支持的格式：</strong><br>
+            <strong>视频：</strong> avi, flv, gif, mkv, mov, mp4, webm<br>
+            <strong>音频：</strong> aac, aiff, alac, flac, m4a, mka, mp3, ogg, opus, vorbis, wav
+        </p>
+        <label for="postprocessorArgsInput">后处理器参数:</label>
+        <input type="text" id="postprocessorArgsInput">
+        <p>例如: Merger+ffmpeg_i1:-v quiet</p>
+        <div style = "display: flex; align-items:center;">
+            <input type="checkbox" id="keepVideoCheckbox">
+            <label for="keepVideoCheckbox">
+                保留视频
+                <span class="wenhao" title="保留混流之前的临时视频文件。">
+                    <i></i>
+                </span>
+            </label>
+            <input type="checkbox" id="noKeepVideoCheckbox">
+            <label for="noKeepVideoCheckbox">
+                不保留视频
+                <span class="wenhao" title="删除混流之前的临时视频文件。">
+                    <i></i>
+                </span>
+            </label>
+        </div>
+        <input type="checkbox" id="postOverwritesCheckbox">
+        <label for="postOverwritesCheckbox">覆盖后处理文件</label>
+        <input type="checkbox" id="noPostOverwritesCheckbox">
+        <label for="noPostOverwritesCheckbox">不覆盖后处理文件</label>
+    </fieldset>
+
+    <fieldset class="option-fieldset nested-fieldset">
+        <legend>元数据处理</legend>
+
+        <input type="checkbox" id="embedMetadataCheckbox">
+        <label for="embedMetadataCheckbox">
+            嵌入元数据
+            <span class="wenhao" title="将元数据嵌入到视频文件中。如果存在章节/信息 JSON，也会嵌入，除非使用了 --no-embed-chapters/--no-embed-info-json。">
+                <i></i>
+            </span>
+        </label>
+        <p>
+            <strong>注意：</strong> 启用此选项后，以下章节和信息 JSON 选项才生效。
+        </p>
+
+        <input type="checkbox" id="embedChaptersCheckbox">
+        <label for="embedChaptersCheckbox">
+            嵌入章节
+            <span class="wenhao" title="将章节标记添加到视频文件。">
+                <i></i>
+            </span>
+        </label>
+        <input type="checkbox" id="noEmbedChaptersCheckbox">
+        <label for="noEmbedChaptersCheckbox">
+            不嵌入章节
+            <span class="wenhao" title="不添加章节标记（默认）。">
+                <i></i>
+            </span>
+        </label>
+
+        <input type="checkbox" id="embedInfoJsonCheckbox">
+        <label for="embedInfoJsonCheckbox">
+            嵌入信息 JSON
+            <span class="wenhao" title="将信息 JSON 作为附件嵌入到 MKV/MKA 视频文件中。">
+                <i></i>
+            </span>
+        </label>
+        <input type="checkbox" id="noEmbedInfoJsonCheckbox">
+        <label for="noEmbedInfoJsonCheckbox">
+            不嵌入信息 JSON
+            <span class="wenhao" title="不将信息 JSON 作为附件嵌入到视频文件中。">
+                <i></i>
+            </span>
+        </label>
+
+        <input type="checkbox" id="embedSubsCheckbox">
+        <label for="embedSubsCheckbox">
+            嵌入字幕
+            <span class="wenhao" title="将字幕嵌入到视频文件中。">
+                <i></i>
+            </span>
+        </label>
+        <input type="checkbox" id="noEmbedSubsCheckbox">
+        <label for="noEmbedSubsCheckbox">
+            不嵌入字幕
+            <span class="wenhao" title="不将字幕嵌入到视频文件中。">
+                <i></i>
+            </span>
+        </label>
+
+        <input type="checkbox" id="embedThumbnailCheckbox">
+        <label for="embedThumbnailCheckbox">
+            嵌入缩略图
+            <span class="wenhao" title="将缩略图嵌入到视频文件中。">
+                <i></i>
+            </span>
+        </label>
+        <input type="checkbox" id="noEmbedThumbnailCheckbox">
+        <label for="noEmbedThumbnailCheckbox">
+            不嵌入缩略图
+            <span class="wenhao" title="不将缩略图嵌入到视频文件中。">
+                <i></i>
+            </span>
+        </label>
+
+        <label for="parseMetadataInput">解析元数据:</label>
+        <input type="text" id="parseMetadataInput">
+        <p>例如: "title:%(title)s"</p>
+
+        <label for="replaceInMetadataInput">替换元数据:</label>
+        <input type="text" id="replaceInMetadataInput">
+        <p>例如: "title . - "</p>
+
+        <input type="checkbox" id="xattrsCheckbox">
+        <label for="xattrsCheckbox">
+            写入扩展属性
+            <span class="wenhao" title="将元数据作为扩展属性写入文件。">
+                <i></i>
+            </span>
+        </label>
+    </fieldset>
+
+
+    <fieldset class="option-fieldset nested-fieldset">
+        <legend>其他处理</legend>
+        <fieldset class="option-fieldset nested-fieldset-deeper">
+            <legend>字幕和缩略图转换</legend>
+            <label for="convertSubsInput">转换字幕:</label>
+            <input type="text" id="convertSubsInput" placeholder="例如: srt">
+            <p>将字幕转换为指定格式。</p>
+
+            <label for="convertThumbnailsInput">转换缩略图:</label>
+            <input type="text" id="convertThumbnailsInput" placeholder="例如: jpg">
+            <p>将缩略图转换为指定格式。</p>
+        </fieldset>
+
+        <fieldset class="option-fieldset nested-fieldset-deeper">
+            <legend>章节处理</legend>
+            <input type="checkbox" id="splitChaptersCheckbox">
+            <label for="splitChaptersCheckbox">
+                分割章节
+                <span class="wenhao" title="将视频按章节分割成多个文件。">
+                    <i></i>
+                </span>
+            </label>
+            <input type="checkbox" id="noSplitChaptersCheckbox">
+            <label for="noSplitChaptersCheckbox">
+                不分割章节
+                <span class="wenhao" title="不分割视频章节。">
+                    <i></i>
+                </span>
+            </label>
+
+            <label for="removeChaptersInput">移除章节:</label>
+            <input type="text" id="removeChaptersInput" placeholder="例如: intro">
+            <p>移除指定名称的章节。</p>
+
+            <input type="checkbox" id="forceKeyframesAtCutsCheckbox">
+            <label for="forceKeyframesAtCutsCheckbox">
+                强制关键帧切割
+                <span class="wenhao" title="强制在关键帧处进行切割，避免切割到非关键帧，可能导致切割不精确。">
+                    <i></i>
+                </span>
+            </label>
+            <input type="checkbox" id="noForceKeyframesAtCutsCheckbox">
+            <label for="noForceKeyframesAtCutsCheckbox">
+                不强制关键帧切割
+                <span class="wenhao" title="不在关键帧处进行切割。">
+                    <i></i>
+                </span>
+            </label>
+        </fieldset>
+
+        <fieldset class="option-fieldset nested-fieldset-deeper">
+            <legend>执行命令和后处理器</legend>
+            <label for="execInput">执行命令:</label>
+            <input type="text" id="execInput" placeholder="例如: after_move:mv %(filepath)q /tmp/">
+            <p>在特定事件后执行外部命令。</p>
+
+            <input type="checkbox" id="noExecCheckbox">
+            <label for="noExecCheckbox">
+                移除执行命令
+                <span class="wenhao" title="不执行任何外部命令。">
+                    <i></i>
+                </span>
+            </label>
+
+            <label for="usePostprocessorInput">使用后处理器:</label>
+            <input type="text" id="usePostprocessorInput" placeholder="例如: Merger:pp_args=...">
+            <p>使用指定的后处理器。</p>
+        </fieldset>
+  </fieldset>
+</fieldset>
+
+  
+  </fieldset>
+  <fieldset class="option-fieldset subtitles-options">
+    <legend id="nav-subtitles">字幕选项</legend>
+
+    <input type="checkbox" id="listSubsCheckbox">
+    <label for="listSubsCheckbox">列出字幕</label>
+    <p>
+        在终端中列出所有可下载的字幕，不下载字幕。
+        根据列出的字幕信息，使用 --sub-langs 选项选择字幕语言。
+    </p>
+
+    <fieldset id="regularSubsGroup" class="nested-fieldset regular-subs-group">
+        <legend>字幕下载</legend>
+
+        <div style="display: flex; align-items: center;">
+            <input type="radio" id="writeSubsRadio" name="writeSubsGroup" value="yes">
+            <label for="writeSubsRadio">
+                下载字幕
+                <span class="wenhao" title="下载所有可用的字幕。">
+                    <i></i>
+                </span>
+            </label>
+
+            <input type="radio" id="noWriteSubsRadio" name="writeSubsGroup" value="no" checked>
+            <label for="noWriteSubsRadio">
+                不下载字幕
+                <span class="wenhao" title="不下载字幕（默认）。">
+                    <i></i>
+                </span>
+            </label>
+        </div>
+
+        <div style="display: flex; align-items: center;">
+            <input type="radio" id="writeAutoSubsRadio" name="writeAutoSubsGroup" value="yes">
+            <label for="writeAutoSubsRadio">
+                下载自动字幕
+                <span class="wenhao" title="下载自动生成的字幕。">
+                    <i></i>
+                </span>
+            </label>
+
+            <input type="radio" id="noWriteAutoSubsRadio" name="writeAutoSubsGroup" value="no" checked>
+            <label for="noWriteAutoSubsRadio">
+                不下载自动字幕
+                <span class="wenhao" title="不下载自动生成的字幕（默认）。">
+                    <i></i>
+                </span>
+            </label>
+        </div>
+
+        <label for="subFormatInput">字幕格式:</label>
+        <input type="text" id="subFormatInput" placeholder="例如: srt/vtt">
+        <p>指定字幕格式，使用 "/" 分隔多个格式。</p>
+
+        <label for="subLangsInput">字幕语言:</label>
+        <input type="text" id="subLangsInput" placeholder="例如: zh-Hans/en">
+        <p>
+            指定字幕语言，使用 "/" 分隔多个语言。
+            语言代码遵循 ISO 639-1 或 ISO 639-2 标准。
+            例如：zh-Hans（简体中文），en（英语），ja（日语）。
+        </p>
+
+    </fieldset>
+
+</fieldset>
+
+</fieldset>
+
+<fieldset class="option-fieldset">
+    <legend id="nav-login-auth">登录认证选项</legend>
+
+    <p class="default-message">
+        如果网站不需要登录即可访问，请留空以下选项。
+    </p>
+
+    <label class="input-label" for="usernameInput">用户名:</label>
+    <input type="text" id="usernameInput" placeholder="请输入用户名">
+    <p>网站登录用户名。</p>
+
+    <label class="input-label" for="passwordInput">密码:</label>
+    <input type="password" id="passwordInput" placeholder="请输入密码">
+    <p>网站登录密码。</p>
+
+    <label class="input-label" for="twofactorInput">双重验证码:</label>
+    <input type="text" id="twofactorInput" placeholder="请输入双重验证码">
+    <p>双重验证码（如果需要）。</p>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="netrcCheckbox">
+        <label for="netrcCheckbox">使用 .netrc 文件</label>
+    </div>
+    <p>使用 .netrc 文件进行身份验证。</p>
+
+    <label class="input-label" for="netrcLocationInput">.netrc 文件位置:</label>
+    <input type="text" id="netrcLocationInput" placeholder="请输入 .netrc 文件路径">
+    <p>.netrc 文件的路径。</p>
+
+    <label class="input-label" for="netrcCmdInput">.netrc 命令:</label>
+    <input type="text" id="netrcCmdInput" placeholder="请输入 .netrc 命令">
+    <p>用于从 .netrc 文件中获取凭据的命令。</p>
+
+    <label class="input-label" for="videoPasswordInput">视频密码:</label>
+    <input type="password" id="videoPasswordInput" placeholder="请输入视频密码">
+    <p>受密码保护的视频的密码。</p>
+
+    <label class="input-label" for="apMsoInput">MSO:</label>
+    <input type="text" id="apMsoInput" placeholder="请输入 MSO">
+    <p>MSO（媒体服务运营商）名称。</p>
+
+    <label class="input-label" for="apUsernameInput">MSO 用户名:</label>
+    <input type="text" id="apUsernameInput" placeholder="请输入 MSO 用户名">
+    <p>MSO 登录用户名。</p>
+
+    <label class="input-label" for="apPasswordInput">MSO 密码:</label>
+    <input type="password" id="apPasswordInput" placeholder="请输入 MSO 密码">
+    <p>MSO 登录密码。</p>
+
+    <label class="input-label" for="clientCertificateInput">客户端证书:</label>
+    <input type="text" id="clientCertificateInput" placeholder="请输入客户端证书路径">
+    <p>客户端证书文件的路径。</p>
+
+    <label class="input-label" for="clientCertificateKeyInput">客户端证书密钥:</label>
+    <input type="text" id="clientCertificateKeyInput" placeholder="请输入客户端证书密钥路径">
+    <p>客户端证书密钥文件的路径。</p>
+
+    <label class="input-label" for="clientCertificatePasswordInput">客户端证书密码:</label>
+    <input type="password" id="clientCertificatePasswordInput" placeholder="请输入客户端证书密码">
+    <p>客户端证书密码。</p>
+</fieldset>
+
+<fieldset class="option-fieldset">
+    <legend id="nav-cookies">Cookies选项</legend>
+
+    <p class="default-message">
+        默认情况下，yt-dlp 不会读取任何 Cookies。
+    </p>
+
+    <label class="input-label" for="cookiesFileInput">Cookies 文件:</label>
+    <input type="file" id="cookiesFileInput">
+    <p>指定包含 Cookies 的文件。</p>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noCookiesCheckbox">
+        <label for="noCookiesCheckbox">
+            不使用 Cookies
+            <span class="wenhao" title="忽略任何 Cookies 文件。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <label class="input-label" for="cookiesFromBrowserInput">从浏览器读取 Cookies:</label>
+    <input type="text" id="cookiesFromBrowserInput" placeholder="例如: chrome:Default">
+    <p>
+        指定要从中读取 Cookies 的浏览器。
+        如果浏览器有多个配置文件，请使用 "浏览器名称:配置文件名称" 的格式。
+        例如：chrome:Default，firefox:Profile1。
+    </p>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noCookiesFromBrowserCheckbox">
+        <label for="noCookiesFromBrowserCheckbox">
+            不从浏览器读取 Cookies
+            <span class="wenhao" title="不从任何浏览器读取 Cookies。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+</fieldset>
+
+
+
+
+  <fieldset class="option-fieldset">
+    <legend id="nav-proxy">网络代理选项</legend>
+
+    <label class="input-label" for="proxyInput">代理服务器:</label>
+    <input type="text" id="proxyInput">
+    <p>例如: socks5://127.0.0.1:1080 或 http://user:pass@10.10.0.1:3128</p>
+
+    <label class="input-label" for="socketTimeoutInput">套接字超时:</label>
+    <input type="text" id="socketTimeoutInput">
+    <p>以秒为单位</p>
+
+    <label class="input-label" for="sourceAddressInput">源地址:</label>
+    <input type="text" id="sourceAddressInput">
+
+</fieldset>
+
+ <fieldset class="option-fieldset">
+    <legend id="nav-config">配置文件选项</legend>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="ignoreConfigCheckbox">
+        <label for="ignoreConfigCheckbox">
+            忽略配置文件
+            <span class="wenhao" title="不加载任何配置文件，除了通过 --config-locations 指定的配置文件。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <div class="checkbox-label">
+        <input type="checkbox" id="noConfigLocationsCheckbox">
+        <label for="noConfigLocationsCheckbox">
+            不加载自定义配置文件
+            <span class="wenhao" title="不加载任何自定义配置文件（默认）。在配置文件中使用时，忽略当前文件中定义的所有之前的 --config-locations。">
+                <i></i>
+            </span>
+        </label>
+    </div>
+
+    <label class="input-label" for="configLocationsInput">
+        配置文件路径
+        <span class="wenhao" title="主配置文件的位置；可以是配置文件路径或其包含目录（“-”表示 stdin）。可以在其他配置文件中使用多次。">
+            <i> </i>
+        </span>
+        <input type="text" id="configLocationsInput" placeholder="请输入配置文件路径">
+        <br>
+
+    </label>
+
+</fieldset>
+
+</fieldset>
+<div id="commandOutputCard">
+    <div id="commandArea">
+        <textarea id="commandOutput" rows="4" cols="50"></textarea>
+        <button id="generateButton">生成命令</button>
+    </div>
+    <div id="actionButtons">
+        <button id="copyCommandButton">复制命令</button>
+        <button id="resetSettingsButton">恢复默认设置</button>
+    </div>
+</div>
+<footer id="pageFooter">
+    <a href="#">位置留空</a>
+</footer>
+<script>
+  // 选项映射
+// 选项映射
+const optionsMap = {
+  'verbose': 'verboseCheckbox',
+  'no-warnings': 'noWarningsCheckbox',
+  'simulate': 'simulateCheckbox',
+  'no-simulate': 'noSimulateCheckbox',
+  'force-ipv4': 'forceIpv4Checkbox',
+  'force-ipv6': 'forceIpv6Checkbox',
+  'flat-playlist': 'flatPlaylistCheckbox',
+  'live-from-start': 'liveFromStartCheckbox',
+  'format': 'formatInput',
+  'format-sort': 'formatSortInput',
+  'format-sort-force': 'formatSortForceRadio',
+  'no-format-sort-force': 'noFormatSortForceRadio',
+  'video-multistreams': 'videoMultistreamsRadio',
+  'no-video-multistreams': 'noVideoMultistreamsRadio',
+  'audio-multistreams': 'audioMultistreamsRadio',
+  'no-audio-multistreams': 'noAudioMultistreamsRadio',
+  'prefer-free-formats': 'preferFreeFormatsRadio',
+  'no-prefer-free-formats': 'noPreferFreeFormatsRadio',
+  'check-formats': 'checkFormatsRadio',
+  'check-all-formats': 'checkAllFormatsRadio',
+  'no-check-formats': 'noCheckFormatsRadio',
+  'list-formats': 'listFormatsCheckbox',
+  'merge-output-format': 'mergeOutputFormatInput',
+  'extract-audio': 'extractAudioCheckbox',
+  'audio-format': 'audioFormatInput',
+  'audio-quality': 'audioQualityInput',
+  'remux-video': 'remuxVideoInput',
+  'recode-video': 'recodeVideoInput',
+  'postprocessor-args': 'postprocessorArgsInput',
+  'keep-video': 'keepVideoCheckbox',
+  'no-keep-video': 'noKeepVideoCheckbox',
+  'post-overwrites': 'postOverwritesCheckbox',
+  'no-post-overwrites': 'noPostOverwritesCheckbox',
+  'embed-subs': 'embedSubsCheckbox',
+  'no-embed-subs': 'noEmbedSubsCheckbox',
+  'embed-thumbnail': 'embedThumbnailCheckbox',
+  'no-embed-thumbnail': 'noEmbedThumbnailCheckbox',
+  'embed-metadata': 'embedMetadataCheckbox',
+  'no-embed-metadata': 'noEmbedMetadataCheckbox',
+  'embed-chapters': 'embedChaptersCheckbox',
+  'no-embed-chapters': 'noEmbedChaptersCheckbox',
+  'embed-info-json': 'embedInfoJsonCheckbox',
+  'no-embed-info-json': 'noEmbedInfoJsonCheckbox',
+  'parse-metadata': 'parseMetadataInput',
+  'replace-in-metadata': 'replaceInMetadataInput',
+  'xattrs': 'xattrsCheckbox',
+  'concat-playlist': 'concatPlaylistInput',
+  'fixup': 'fixupInput',
+  'ffmpeg-location': 'ffmpegLocationInput',
+  'exec': 'execInput',
+  'no-exec': 'noExecCheckbox',
+  'convert-subs': 'convertSubsInput',
+  'convert-thumbnails': 'convertThumbnailsInput',
+  'split-chapters': 'splitChaptersCheckbox',
+  'no-split-chapters': 'noSplitChaptersCheckbox',
+  'remove-chapters': 'removeChaptersInput',
+  'no-remove-chapters': 'noRemoveChaptersCheckbox',
+  'force-keyframes-at-cuts': 'forceKeyframesAtCutsCheckbox',
+  'no-force-keyframes-at-cuts': 'noForceKeyframesAtCutsCheckbox',
+  'use-postprocessor': 'usePostprocessorInput',
+  'write-subs': 'writeSubsRadio',
+  'no-write-subs': 'noWriteSubsRadio',
+  'write-auto-subs': 'writeAutoSubsRadio',
+  'no-write-auto-subs': 'noWriteAutoSubsRadio',
+  'list-subs': 'listSubsCheckbox',
+  'sub-format': 'subFormatInput',
+  'sub-langs': 'subLangsInput',
+  'username': 'usernameInput',
+  'password': 'passwordInput',
+  'twofactor': 'twofactorInput',
+  'netrc': 'netrcCheckbox',
+  'netrc-location': 'netrcLocationInput',
+  'netrc-cmd': 'netrcCmdInput',
+  'video-password': 'videoPasswordInput',
+  'ap-mso': 'apMsoInput',
+  'ap-username': 'apUsernameInput',
+  'ap-password': 'apPasswordInput',
+  'client-certificate': 'clientCertificateInput',
+  'client-certificate-key': 'clientCertificateKeyInput',
+  'client-certificate-password': 'clientCertificatePasswordInput',
+  'cookies': 'cookiesFileInput',
+  'no-cookies': 'noCookiesCheckbox',
+  'cookies-from-browser': 'cookiesFromBrowserInput',
+  'no-cookies-from-browser': 'noCookiesFromBrowserCheckbox',
+  'proxy': 'proxyInput',
+  'socket-timeout': 'socketTimeoutInput',
+  'source-address': 'sourceAddressInput',
+  'paths': 'pathsInput',
+  'fulltitle': 'fulltitleInput',
+  'alt_title': 'altTitleInput',
+  'description': 'descriptionInput',
+  'duration_string': 'durationStringInput',
+  'ignore-config': 'ignoreConfigCheckbox',
+  'no-config-locations': 'noConfigLocationsCheckbox',
+  'config-locations': 'configLocationsInput',
+  'output-na-placeholder': 'outputNaPlaceholderInput',
+    'restrict-filenames': 'restrictFilenamesCheckbox',
+    'no-restrict-filenames': 'noRestrictFilenamesCheckbox',
+    'mtime': 'mtimeCheckbox',
+    'no-mtime': 'noMtimeCheckbox',
+    'windows-filenames': 'windowsFilenamesCheckbox',
+    'no-windows-filenames': 'noWindowsFilenamesCheckbox',
+};
+
+// 添加事件监听器
+document.getElementById('addTemplateVariable').addEventListener('click', () => {
+    addVariable();
+});
+
+function addVariable() {
+    const templateBuilder = document.getElementById('outputTemplateBuilder');
+    const templateBuilderSpan = document.getElementById('outputTemplateBuilderSpan'); // 获取新增的 div 元素
+    const selectedVariable = templateBuilder.querySelector('.template-variable').value;
+
+    if (!selectedVariable) {
+        // 处理无效的变量选择
+        return;
+    }
+
+    // 创建一个新的 span 元素，包含选中的变量和删除按钮
+    const variableSpan = document.createElement('span');
+    variableSpan.innerHTML = `
+        ${selectedVariable} <button class="remove-variable">x</button>
+    `;
+    templateBuilderSpan.appendChild(variableSpan); // 将 span 添加到 outputTemplateBuilderSpan 中
+
+    // 删除按钮的事件监听器
+    variableSpan.querySelector('.remove-variable').addEventListener('click', () => {
+        removeVariable(variableSpan);
+    });
+
+    // 将模板变量更新到 输出模板的文本框中
+    updateOutputTemplateInput();
+}
+
+function removeVariable(variableSpan) {
+    const templateBuilderSpan = document.getElementById('outputTemplateBuilderSpan'); // 获取新增的 div 元素
+    templateBuilderSpan.removeChild(variableSpan);
+    updateOutputTemplateInput();
+}
+
+function updateOutputTemplateInput() {
+    const outputInput = document.getElementById('outputInput');
+    const variableSpans = document.querySelectorAll('#outputTemplateBuilderSpan span'); // 修改选择器
+    let outputTemplate = '';
+    variableSpans.forEach(span => {
+        outputTemplate += span.textContent.replace(' x', '').trim(); // 移除 " x" 和首尾空格
+    });
+    // 检查输出模板是否已包含 .%(ext)s
+    if (!outputTemplate.includes('.%(ext)s')) {
+        outputTemplate += '.%(ext)s'; // 默认添加 .%(ext)s
+    }
+    outputInput.value = outputTemplate;
+}
+
+// 添加事件监听器
+document.getElementById('outputTemplateBuilderSpan').addEventListener('click', (event) => { // 修改选择器
+    // 检查是否点击了删除按钮，如果是，则更新模板
+    if (event.target.classList.contains('remove-variable')) {
+        updateOutputTemplateInput();
+    }
+});
+
+
+
+document.getElementById('listFormatsCheckbox').addEventListener('change', () => {
+  const listFormatsCheckbox = document.getElementById('listFormatsCheckbox');
+  const regularFormatsGroup = document.getElementById('regularFormatsGroup');
+
+  if (listFormatsCheckbox.checked) {
+    // 禁用第二组
+    regularFormatsGroup.querySelectorAll('input, select, textarea, button').forEach(element => {
+      element.disabled = true;
+    });
+
+    // 重置第二组表单值
+    document.getElementById('formatPresetSelect').value = 'bestvideo+bestaudio'; // 重置预设选项
+    document.getElementById('customFormatCheckbox').checked = false; // 重置自定义选项
+    document.getElementById('formatInput').value = ''; // 重置格式选择
+    document.getElementById('formatSortInput').value = ''; // 重置格式排序
+    document.getElementById('formatSortForceRadio').checked = false; // 重置强制排序
+    document.getElementById('noFormatSortForceRadio').checked = true; // 重置强制排序
+    document.getElementById('videoMultistreamsRadio').checked = false; // 重置视频多流合并
+    document.getElementById('noVideoMultistreamsRadio').checked = true; // 重置视频多流合并
+    document.getElementById('audioMultistreamsRadio').checked = false; // 重置音频多流合并
+    document.getElementById('noAudioMultistreamsRadio').checked = true; // 重置音频多流合并
+    document.getElementById('preferFreeFormatsRadio').checked = false; // 重置偏好自由格式
+    document.getElementById('noPreferFreeFormatsRadio').checked = true; // 重置偏好自由格式
+    document.getElementById('checkFormatsRadio').checked = false; // 重置格式检查
+    document.getElementById('checkAllFormatsRadio').checked = false; // 重置格式检查
+    document.getElementById('noCheckFormatsRadio').checked = true; // 重置格式检查
+  } else {
+    // 启用第二组
+    regularFormatsGroup.querySelectorAll('input, select, textarea, button').forEach(element => {
+      element.disabled = false;
+    });
+  }
+});
+
+
+document.getElementById('formatPresetSelect').addEventListener('change', () => {
+  const presetValue = document.getElementById('formatPresetSelect').value;
+  switch (presetValue) {
+    case 'bestvideo+bestaudio':
+      document.getElementById('formatInput').value = 'bestvideo+bestaudio/best';
+      document.getElementById('formatSortInput').value = '';
+      break;
+    case 'bestvideo':
+      document.getElementById('formatInput').value = 'bestvideo';
+      document.getElementById('formatSortInput').value = '';
+      break;
+    case 'bestaudio':
+      document.getElementById('formatInput').value = 'bestaudio';
+      document.getElementById('formatSortInput').value = '';
+      break;
+    case 'height:480':
+      document.getElementById('formatInput').value = '';
+      document.getElementById('formatSortInput').value = 'height:480';
+      break;
+    case 'height:720':
+      document.getElementById('formatInput').value = '';
+      document.getElementById('formatSortInput').value = 'height:720';
+      break;
+    case 'height:1080':
+      document.getElementById('formatInput').value = '';
+      document.getElementById('formatSortInput').value = 'height:1080';
+      break;
+    case 'height:1440':
+      document.getElementById('formatInput').value = '';
+      document.getElementById('formatSortInput').value = 'height:1440';
+      break;
+    case 'ext=mp4':
+      document.getElementById('formatInput').value = 'bv*[ext=mp4]+ba[ext=m4a]/b[ext=mp4] / bv*+ba/b';
+      document.getElementById('formatSortInput').value = '';
+      break;
+    case 'ext=webm':
+      document.getElementById('formatInput').value = 'bv*[ext=webm]+ba[ext=webm]/b[ext=webm] / bv*+ba/b';
+      document.getElementById('formatSortInput').value = '';
+      break;
+    case 'filesize:50M':
+      document.getElementById('formatInput').value = '';
+      document.getElementById('formatSortInput').value = 'filesize:50M';
+      break;
+    case 'filesize~50M':
+      document.getElementById('formatInput').value = 'b';
+      document.getElementById('formatSortInput').value = 'filesize~50M';
+      break;
+  }
+});
+
+document.getElementById('customFormatCheckbox').addEventListener('change', () => {
+  const customFormatCheckbox = document.getElementById('customFormatCheckbox');
+  const formatPresetSelect = document.getElementById('formatPresetSelect');
+  const formatInput = document.getElementById('formatInput');
+  const formatSortInput = document.getElementById('formatSortInput');
+
+  if (customFormatCheckbox.checked) {
+    formatPresetSelect.disabled = true;
+    formatInput.disabled = false;
+    formatSortInput.disabled = false;
+  } else {
+    formatPresetSelect.disabled = false;
+    formatInput.disabled = true;
+    formatSortInput.disabled = true;
+  }
+});
+
+// 初始化状态
+document.getElementById('customFormatCheckbox').dispatchEvent(new Event('change'));
+
+document.getElementById('listSubsCheckbox').addEventListener('change', () => {
+    const listSubsCheckbox = document.getElementById('listSubsCheckbox');
+    const regularSubsGroup = document.getElementById('regularSubsGroup');
+
+    if (listSubsCheckbox.checked) {
+        // 禁用常规字幕选项
+        regularSubsGroup.querySelectorAll('input, select, textarea, button').forEach(element => {
+            element.disabled = true;
+        });
+        document.getElementById('writeSubsRadio').checked = false;
+        document.getElementById('noWriteSubsRadio').checked = true;
+        document.getElementById('writeAutoSubsRadio').checked = false;
+        document.getElementById('noWriteAutoSubsRadio').checked = true;
+        document.getElementById('subFormatInput').value = '';
+        document.getElementById('subLangsInput').value = '';
+    } else {
+        // 启用常规字幕选项
+        regularSubsGroup.querySelectorAll('input, select, textarea, button').forEach(element => {
+            element.disabled = false;
+        });
+    }
+});
+//初始化状态
+document.getElementById('listSubsCheckbox').dispatchEvent(new Event('change'));
+
+
+
+
+// 保存所有选项和输入到 localStorage
+function saveData() {
+    const data = {};
+    const allInputs = document.querySelectorAll('input, select, textarea');
+    allInputs.forEach(input => {
+        if (input.type === 'checkbox') {
+            data[input.id] = input.checked;
+        } else if (input.type === 'radio') {
+            if (input.checked) {
+                data[input.id] = input.value;
+            }
+        } else if (input.type === 'file') {
+          // 文件输入框无法直接设置值，需要特殊处理
+        } else {
+            data[input.id] = input.value;
+        }
+    });
+    localStorage.setItem('yt-dlp-generator-data', JSON.stringify(data));
+}
+
+// 从 localStorage 加载所有选项和输入
+function loadData() {
+    const data = JSON.parse(localStorage.getItem('yt-dlp-generator-data'));
+    if (data) {
+        for (const inputId in data) {
+            const input = document.getElementById(inputId);
+            if (input) {
+                if (input.type === 'checkbox') {
+                    input.checked = data[inputId];
+                } else if (input.type === 'radio') {
+                    if (input.value === data[inputId]) {
+                        input.checked = true;
+                    }
+                } else if (input.type === 'file') {
+                     // 文件输入框无法直接设置值，需要特殊处理
+                } else {
+                    input.value = data[inputId];
+                }
+            }
+        }
+    }
+}
+
+// 在页面加载时加载数据
+window.addEventListener('load', loadData);
+
+// 在输入框内容改变时保存数据
+const allInputs = document.querySelectorAll('input, select, textarea');
+allInputs.forEach(input => {
+    input.addEventListener('change', saveData);
+});
+
+// 生成命令函数
+function generate() {
+  try {
+    let command = 'yt-dlp';
+    for (const option in optionsMap) {
+      const elementId = optionsMap[option];
+      const element = document.getElementById(elementId);
+      if (element) {
+        if (element.type === 'checkbox') {
+          if (element.checked) {
+            command += ` --${option}`;
+          }
+        } else if (element.type === 'radio') {
+          if (element.checked && element.value === 'yes') {
+            command += ` --${option}`;
+          }
+        } else if (element.type === 'file') {
+          if (element.files && element.files[0]) {
+            command += ` --${option} "${element.files[0].name}"`;
+          }
+        } else {
+          if (element.value) {
+            command += ` --${option} "${element.value}"`;
+          }
+        }
+      }
+    }
+    const url = document.getElementById('urlInput').value;
+    if (url) {
+      command += ` ${url}`; // 确保只添加一次 URL
+    }
+    // 添加输出模板
+    const outputInput = document.getElementById('outputInput');
+    command += ` -o "${outputInput.value}"`; // 确保只添加 -o
+    document.getElementById('commandOutput').value = command;
+  } catch (error) {
+    console.error('生成命令时出错：', error);
+    document.getElementById('commandOutput').value = '生成命令时出错，请检查控制台。';
+  }
+}
+// 生成按钮的事件监听器
+document.getElementById('generateButton').addEventListener('click', generate);
+
+// 恢复默认设置按钮的事件监听器
+document.getElementById('resetSettingsButton').addEventListener('click', () => {
+    localStorage.removeItem('yt-dlp-generator-data');
+    location.reload(); // 重新加载页面，应用默认设置
+});
+
+
+  // 生成按钮的事件监听器
+  document.getElementById('generateButton').addEventListener('click', generate);
+
+
+// 复制命令按钮的事件监听器
+document.getElementById('copyCommandButton').addEventListener('click', () => {
+    const commandOutput = document.getElementById('commandOutput').textContent;
+    navigator.clipboard.writeText(commandOutput)
+        .then(() => {
+            alert('命令已复制到剪贴板！');
+        })
+        .catch(err => {
+            console.error('无法复制命令：', err);
+            alert('复制命令失败，请手动复制。');
+        });
+});
+
+let currentTheme = 'default';
+
+function setTheme(theme) {
+    if (theme === 'light') {
+        document.body.classList.add('light');
+        document.body.classList.remove('oled-theme');
+        currentTheme = 'light';
+    } else if (theme === 'oled') {
+        document.body.classList.add('oled-theme');
+        document.body.classList.remove('light');
+        currentTheme = 'oled';
+    } else {
+        document.body.classList.remove('light');
+        document.body.classList.remove('oled-theme');
+        currentTheme = 'default';
+    }
+}
+
+document.querySelector('.theme-toggle-button').addEventListener('click', () => {
+    if (currentTheme === 'default') {
+        setTheme('light');
+    } else if (currentTheme === 'light') {
+        setTheme('oled');
+    } else {
+        setTheme('default');
+    }
+});
+ 
+</script>
